@@ -8,17 +8,37 @@ public class PlayerScript : MonoBehaviour
 
     private Rigidbody2D rd2d;
     public float speed;
-    public Text score;
-    private int scoreValue = 0;
+    public Text scoreText;
+    public Text winText;
+    public Text livesText;
+
+    private int score;
+    private int lives;
 
     // Start is called before the first frame update
     void Start()
     {
         rd2d = GetComponent<Rigidbody2D>();
-        score.text = scoreValue.ToString();
+        score = 0;
+        lives = 3;
+        winText.text = "";
+        SetScoreText ();
+        SetLivesText();
     }
 
     // Update is called once per frame
+    private void SetLivesText()
+    {
+        livesText.text = "Lives: " + lives.ToString();
+        if (lives == 0)
+        {
+            winText.text = "You lose!";
+        }
+        if (lives == 0)
+        {
+            Destroy(gameObject);
+        }
+    }
     void FixedUpdate()
     {
         float hozMovement = Input.GetAxis("Horizontal");
@@ -31,9 +51,32 @@ public class PlayerScript : MonoBehaviour
     {
         if(collision.collider.tag == "Coin")
         {
-            scoreValue += 1;
-            score.text = scoreValue.ToString();
+            score = score + 1;
+            SetScoreText();
             Destroy(collision.collider.gameObject);
+        }
+        
+        if (collision.collider.tag == "Enemy")
+        {
+            lives = lives - 1;
+            SetLivesText();
+            Destroy(collision.collider.gameObject);
+
+        }
+    }
+
+    void SetScoreText()
+    {
+        scoreText.text = "Score: " + score.ToString();
+        if (score >= 8)
+        {
+            winText.text = "You win! Game created by Alejandro Revilla Young";
+        }
+        if (score == 4)
+        {
+        transform.position = new Vector2(46.1f, 0.0f);
+            lives = 3;
+            SetLivesText();
         }
     }
 
